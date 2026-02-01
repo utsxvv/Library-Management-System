@@ -1,0 +1,61 @@
+{% include "index.html" %} 
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">My Books</h1>
+        <p class="text-xl text-gray-600">View your issued books and requests</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- ISSUED BOOKS -->
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Issued Books</h2>
+
+            {% if issued_books %}
+                {% for record in issued_books %}
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6 flex justify-between items-start">
+                    <div>
+                        <p class="text-xl font-semibold text-gray-900">{{ record.book.title }}</p>
+                        <p class="text-sm text-gray-600 mb-2">{{ record.book.author }}</p>
+                        <p class="text-sm text-gray-700">Due: {{ record.due_date }}</p>
+
+                        {% if record.status == "overdue" %}
+                        <p class="mt-2 text-red-600 font-semibold">Status: Overdue</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500">You haven’t issued any books yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- MY REQUESTS -->
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Requests</h2>
+
+            {% if my_requests %}
+                {% for req in my_requests %}
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6 flex justify-between items-start">
+                    <div>
+                        <p class="text-xl font-semibold text-gray-900">{{ req.book.title }}</p>
+                        <p class="text-sm text-gray-600 mb-2">{{ req.book.author }}</p>
+                        <p class="text-sm text-gray-700">Requested on {{ req.request_date }}</p>
+                    </div>
+
+                    {% if req.status == "pending" %}
+                        <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Pending</span>
+                    {% elif req.status == "approved" %}
+                        <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Approved</span>
+                    {% else %}
+                        <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Rejected</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500">You haven’t made any book requests yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

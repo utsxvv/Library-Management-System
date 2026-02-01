@@ -1,0 +1,12 @@
+To create tables and columns in your database
+-----------------------------------------------------------------------------
+-> First have to create superuser :-  python manage.py createsuperuser
+-> Then make migration :- python manage.py makemigrations
+-> Then migrate :- python manage.py migrate
+
+-------------------------------------------------------------------
+To add csv files data to your database
+---------------------------------------------------------------------
+-> in terminal write :- python manage.py shell
+-> Then copy this code in shell :- exec(open('import_books.py').read())
+

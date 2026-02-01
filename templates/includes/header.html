@@ -1,0 +1,76 @@
+{% load static %}
+
+<nav class="sticky top-0 z-20 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2">
+                    <a href="{% url 'user_dashboard' %}"
+                        class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2 hover:opacity-90 transition duration-150">
+                        <img src="{% static 'images/logo.png' %}" alt="Library Logo" class="h-12 w-12" />
+                        <span>MyLibrary</span>
+                    </a>
+                </div>
+
+                <div class="hidden md:ml-6 md:flex md:space-x-4">
+                    <a href="{% url 'user_dashboard' %}"
+                        class="{% if request.resolver_match.url_name == 'user_dashboard' %}text-gray-900 border-b-2 border-blue-600{% else %}text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent{% endif %} px-3 py-2 text-sm font-medium transition duration-150">
+                        Home
+                    </a>
+
+                    <a href="{% url 'user_browse' %}"
+                        class="{% if request.resolver_match.url_name == 'user_browse' %}text-gray-900 border-b-2 border-blue-600{% else %}text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent{% endif %} px-3 py-2 text-sm font-medium transition duration-150">
+                        Browse
+                    </a>
+
+                    <a href="{% url 'user_my_books' %}"
+                        class="{% if request.resolver_match.url_name == 'user_my_books' %}text-gray-900 border-b-2 border-blue-600{% else %}text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent{% endif %} px-3 py-2 text-sm font-medium transition duration-150">
+                        My Books
+                    </a>
+
+                    <a href="{% url 'user_my_requests' %}"
+                        class="{% if request.resolver_match.url_name == 'user_my_requests' %}text-gray-900 border-b-2 border-blue-600{% else %}text-gray-500 hover:text-gray-900 hover:border-gray-300 border-transparent{% endif %} px-3 py-2 text-sm font-medium transition duration-150">
+                        Requests
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <div class="p-6 border-t border-gray-100">
+                    <a href="{% url 'user_logout' %}"
+                        class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition duration-150">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" x2="9" y1="12" y2="12" />
+                        </svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden pb-2">
+            <div class="relative mb-2 px-4">
+                <input type="text" placeholder="Search books..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition duration-150" />
+                <svg class="absolute left-7 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+            </div>
+            <div class="flex justify-around space-x-1 border-t border-gray-100 pt-2">
+                <a href="#"
+                    class="text-gray-900 border-b-2 border-blue-600 px-3 py-2 font-medium text-xs flex-1 text-center transition duration-150">Browse</a>
+                <a href="#"
+                    class="text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-300 px-3 py-2 text-xs font-medium flex-1 text-center transition duration-150">My
+                    Books</a>
+                <a href="#"
+                    class="text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-300 px-3 py-2 text-xs font-medium flex-1 text-center transition duration-150">Requests</a>
+            </div>
+        </div>
+    </div>
+</nav>

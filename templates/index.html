@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LibraryMS{% endblock title %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    {% block header %}{% endblock header %}
+    
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 py-4">
+        {% include 'includes/header.html' %}
+        {% block content %}{% endblock content %}
+    </main>
+
+</body>
+</html>

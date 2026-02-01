@@ -1,0 +1,142 @@
+{% include "index.html" %} {% block content %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
+            Welcome to the Library
+        </h1>
+        <p class="text-xl text-gray-600 mb-6">
+            Discover your next favorite book
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <a href="{% url 'user_my_books' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Books Issued
+                        </p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-blue-600">2</div>
+                </div>
+            </a>
+
+            <a href="{% url 'user_my_requests' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Pending Requests
+                        </p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-yellow-600">1</div>
+                </div>
+            </a>
+
+            <a href="{% url 'user_my_books' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Fines
+                        </p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M6.5 3.5h11m-11 4.722h11M14.292 20.5L6.5 12.944h2.75c6.111 0 6.111-9.444 0-9.444" />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-red-600">&#x20B9 0</div>
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <section class="mb-12">
+        {% if recently_viewed %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Recently Viewed
+            </h2>
+            <div id="book-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for book in recently_viewed %}
+                <div
+                    class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transition-transform duration-300 ease-in-out hover:-translate-y-2">
+                    <div class="relative">
+                        {% if book.available_copies > 0 %}
+                        <span
+                            class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
+                        {% else %}
+                        <span
+                            class="absolute top-2 right-2 bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">Unavailable</span>
+                        {% endif %}
+                        <img class="w-full h-64 object-cover"
+                            src="https://placehold.co/400x600/1F2937/FFFFFF?text={{ book.title|urlencode }}"
+                            alt="Cover of {{ book.title }}">
+                    </div>
+
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 truncate">{{ book.title }}</h3>
+                        <p class="text-sm text-gray-600 mb-3">by {{ book.author }}</p>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for genre in book.genre.all %}
+                            <span class="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">{{ genre.genre_name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="flex-grow"></div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <p id="copies-{{ book.pk }}" class="text-sm text-gray-700 font-medium mb-3">
+                                Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
+                            </p>
+                        </div>
+
+                        <div class="flex gap-3 mt-3">
+
+                            <a href="{% url 'user_book_details' book.book_id %}"
+                                class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
+                                View Details
+                            </a>
+
+                            <button
+                                class="request-book-btn flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                                data-book-id="{{ book.pk }}" data-book-title="{{ book.title }}"
+                                data-book-author="{{ book.author }}">
+                                Request Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% endblock %}

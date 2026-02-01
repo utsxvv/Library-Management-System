@@ -1,0 +1,114 @@
+<div id="book-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for book in books_page %}
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transition-transform duration-300 ease-in-out hover:-translate-y-2">
+        <div class="relative">
+            {% if book.available_copies > 0 %}
+            <span class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
+            {% else %}
+            <span class="absolute top-2 right-2 bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">Unavailable</span>
+            {% endif %}
+            <img class="w-full h-64 object-cover" src="https://placehold.co/400x600/1F2937/FFFFFF?text={{ book.title|urlencode }}" alt="Cover of {{ book.title }}">
+        </div>
+
+        <div class="p-5 flex flex-col flex-grow">
+            <h3 class="text-xl font-bold text-gray-900 truncate">{{ book.title }}</h3>
+            <p class="text-sm text-gray-600 mb-3">by {{ book.author }}</p>
+
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for genre in book.genre.all %}
+                    <span class="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">{{ genre.genre_name }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="flex-grow"></div>
+
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <p id="copies-{{ book.pk }}" class="text-sm text-gray-700 font-medium mb-3">
+                    Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
+                </p>
+            </div>
+
+            <div class="flex gap-3 mt-3">
+                {% if user_type == 'admin' %}
+                    <a href="{% url 'admin_book_details' book.book_id %}"
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
+                        View Details
+                    </a>
+
+                    <a href="{% url 'admin_edit_book' book.book_id %}"
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-center block">
+                        Edit Book
+                    </a>
+
+
+                {% else %}
+                    <a href="{% url 'user_book_details' book.book_id %}"
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
+                        View Details
+                    </a>
+
+                    <button
+                        class="request-book-btn flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                        data-book-id="{{ book.pk }}"
+                        data-book-title="{{ book.title }}"
+                        data-book-author="{{ book.author }}">
+                        Request Book
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="col-span-full text-center text-gray-500 py-10">No books found matching your criteria.</p>
+    {% endfor %}
+</div>
+
+<nav id="pagination-container" aria-label="Pagination">
+    {% if books_page.paginator.num_pages > 1 %}
+    <div class="flex justify-center items-center mt-10 space-x-2">
+
+        {# --- Previous Button --- #}
+        {% if books_page.has_previous %}
+            <a href="?page={{ books_page.previous_page_number }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                &laquo; Previous
+            </a>
+        {% endif %}
+
+        {# --- Page Numbers --- #}
+        {% for num in books_page.paginator.page_range %}
+            {% if num == books_page.number %}
+                <a href="?page={{ num }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg z-10">
+                    {{ num }}
+                </a>
+            {% elif num > books_page.number|add:'-3' and num < books_page.number|add:'3' %}
+                <a href="?page={{ num }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    {{ num }}
+                </a>
+            {% elif num == 1 %}
+                <a href="?page=1{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    1 ...
+                </a>
+            {% elif num == books_page.paginator.num_pages %}
+                <a href="?page={{ books_page.paginator.num_pages }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    ... {{ books_page.paginator.num_pages }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {# --- Next Button --- #}
+        {% if books_page.has_next %}
+            <a href="?page={{ books_page.next_page_number }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                Next &raquo;
+            </a>
+        {% endif %}
+
+    </div>
+    {% endif %}
+</nav>
+

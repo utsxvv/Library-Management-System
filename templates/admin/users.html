@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Settings{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+        
+        <header class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10">
+            <button class="text-gray-600 hover:text-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+            </button>
+                <span class="text-lg font-semibold text-gray-900">Library Admin</span>
+                <button class="text-gray-600 hover:text-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+        </header>
+        
+        <main class="p-4 md:p-8">
+
+            <h1 class="text-3xl font-bold text-gray-900 mb-1">User Management</h1>
+            <p class="text-gray-500 mb-8">Manage registered students</p>
+
+            {% comment %} <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="relative flex-grow">
+                    <input type="text" id="user-search" placeholder="Search users..."
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                    >
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-150 flex items-center justify-center space-x-2 w-full md:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Add User</span>
+                </button>
+            </div> {% endcomment %}
+
+            <div id="user-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for user in users %}
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex items-start mb-4">
+                <div class="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-base mr-4
+                    {% cycle 'bg-blue-100 text-blue-700' 'bg-green-100 text-green-700' 'bg-purple-100 text-purple-700' 'bg-yellow-100 text-yellow-700' 'bg-pink-100 text-pink-700' 'bg-red-100 text-red-700' %}">
+                    {{ user.first_name|first|upper }}
+                </div>
+                    <div>
+                        <p class="font-semibold text-gray-800">{{ user.first_name }}</p>
+                        <p class="text-sm text-gray-500">{{ user.email }}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-sm text-gray-600 mb-6">
+                    <div class="flex justify-between items-center">
+                        <span>Books Issued</span>
+                        <span class="px-2 py-0.5 text-xs font-bold text-gray-800 bg-gray-200 rounded-full">{{user.active_issued_count}}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>Fines</span>
+                        <span class="px-3 py-0.5 text-xs font-bold text-gray-700 bg-gray-100 rounded-full">$0</span>
+                    </div>
+                </div>
+
+                {% comment %} <div class="flex space-x-3 border-t pt-4">
+                    <a href="#"
+                        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg transition duration-150 text-center">
+                        View
+                    </a>
+                </div> {% endcomment %}
+            </div>
+            {% empty %}
+            <p class="col-span-full text-center text-gray-500 py-10">No users found.</p>
+            {% endfor %}
+        </div>
+
+        </main>
+    </div>
+
+    
+
+{% endblock %}

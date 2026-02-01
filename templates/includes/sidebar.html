@@ -1,0 +1,108 @@
+{% load static %}
+
+<div id="app-container" class="flex">
+    <div
+        class="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 shadow-xl fixed left-0 top-0 h-full z-10">
+        <div class="p-6 flex items-center justify-between border-b border-gray-100">
+            <a href="{% url 'admin_dashboard' %}"
+                class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2 hover:opacity-90 transition duration-150">
+                <span>MyLibrary</span>
+                <img src="{% static 'images/logo.png' %}" alt="Library Logo" class="h-12 w-12" />
+            </a>
+        </div>
+
+        <nav class="flex-grow p-4 space-y-2">
+            <h3 class="text-xs font-medium uppercase text-gray-500 mb-2 px-2">
+                Menu
+            </h3>
+
+            <a href="{% url 'admin_dashboard' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'dashboard' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'admin_books' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'books' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" fill="none"
+                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+                <span>View Books</span>
+            </a>
+            <a href="{% url 'admin_add_book' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'add_book' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                </svg>
+                <span>Add Book</span>
+            </a>
+            <a href="{% url 'admin_issue_receive' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'issue_return' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
+                </svg>
+                <span>Issue / Receive</span>
+            </a>
+            <a href="{% url 'admin_requests' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'requests' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                </svg>
+                <span>View Requests</span>
+            </a>
+            <a href="{% url 'admin_users' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'users' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Users</span>
+            </a>
+            <a href="{% url 'issue_history' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'users' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="{% url 'admin_settings' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'settings' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-gray-100">
+            <a href="{% url 'admin_logout' %}"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,197 @@
+{% extends "base.html" %} 
+
+{% block title %}Admin Issue Receive{% endblock %} 
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+    <header class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10">
+        </header>
+
+    <main class="p-4 md:p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-1">
+            Issue & Receive Books
+        </h1>
+        <p class="text-gray-500 mb-8">Manage book issues and returns</p>
+
+        {% if messages %}
+        <div class="max-w-4xl mx-auto mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-md mb-2 {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="max-w-4xl mx-auto">
+            <div class="flex bg-white rounded-t-xl shadow-lg p-2 border border-gray-100">
+                <button id="issue-tab" onclick="switchTab('issue')" class="flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700">
+                    Issue Book
+                </button>
+                <button id="return-tab" onclick="switchTab('return')" class="flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 text-gray-600 hover:bg-gray-100">
+                    Receive Book
+                </button>
+            </div>
+
+            <div class="bg-white p-6 md:p-10 rounded-b-xl shadow-2xl border border-t-0 border-gray-100">
+                
+                <div id="issue-form" class="active-form">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-3">
+                        Issue Book to Student
+                    </h2>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-6">
+                            <label for="issue_student_id" class="block text-sm font-medium text-gray-700 mb-2">Student ID / Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="issue_student_id" name="student_id" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm" placeholder="Enter student ID or name" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="issue_book_isbn" class="block text-sm font-medium text-gray-700 mb-2">Book ISBN / Title <span class="text-red-500">*</span></label>
+                            <input type="text" id="issue_book_isbn" name="book_isbn" required class="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm" placeholder="Enter book ISBN or title" />
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <label for="issue_date" class="block text-sm font-medium text-gray-700 mb-2">Issue Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="issue_date" name="issue_date" required class="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm" />
+                            </div>
+                            <div>
+                                <label for="loan_period" class="block text-sm font-medium text-gray-700 mb-2">Loan Period (Days) <span class="text-red-500">*</span></label>
+                                <input type="number" id="loan_period" name="loan_period" required min="1" value="14" class="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm" placeholder="e.g., 14" />
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-150">
+                            Issue Book
+                        </button>
+                    </form>
+                </div>
+
+                <div id="return-form" class="hidden-form hidden">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-3">
+                        Receive Book
+                    </h2>
+
+                    <form method="POST" action="{% url 'return_book_handler' %}">
+                        {% csrf_token %}
+
+                        <div class="mb-6">
+                            <label for="issue_select" class="block text-sm font-medium text-gray-700 mb-2">
+                                Select Issued Book <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select name="issue_id" id="issue_select" required
+                                    onchange="autoFillReturnDetails(this)"
+                                    class="w-full px-4 py-3 border border-gray-300 text-black bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm appearance-none">
+                                    
+                                    <option value="">-- Choose a book to return --</option>
+                                    
+                                    {% for issue in active_issues %}
+                                    <option value="{{ issue.pk }}" 
+                                            data-student-name="{{ issue.user.get_full_name|default:issue.user.username }}"
+                                            data-student-id="{{ issue.user.pk }}">
+                                        {{ issue.book.title }} ({{ issue.book.isbn }}) - {{ issue.user.username }}
+                                    </option>
+                                    {% empty %}
+                                    <option value="" disabled>No active issued books found.</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 pl-1">Select a book from the list to auto-fill student details.</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Student Name (Auto-filled)
+                            </label>
+                            <input type="text" id="student_display" readonly
+                                class="w-full px-4 py-3 border border-gray-200 bg-gray-100 text-gray-500 rounded-lg cursor-not-allowed focus:outline-none"
+                                placeholder="Student name will appear here..."
+                            />
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="return_date" class="block text-sm font-medium text-gray-700 mb-2">
+                                Return Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="return_date" name="return_date" required
+                                class="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                            />
+                        </div>
+
+                        <div class="mb-8">
+                            <label for="book_condition" class="block text-sm font-medium text-gray-700 mb-2">
+                                Book Condition <span class="text-red-500">*</span>
+                            </label>
+                            <select id="book_condition" name="condition" required
+                                class="w-full px-4 py-3 border border-gray-300 text-black bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm">
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                                <option value="poor">Poor</option>
+                                <option value="lost">Lost (Fine applicable)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-150">
+                            Process Return
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Set default date to today
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        if(document.getElementById("issue_date")) document.getElementById("issue_date").value = today;
+        if(document.getElementById("return_date")) document.getElementById("return_date").value = today;
+    });
+
+    // Auto-fill logic for Smart Select
+    function autoFillReturnDetails(selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const studentName = selectedOption.getAttribute('data-student-name');
+        
+        const displayInput = document.getElementById('student_display');
+        
+        if (studentName) {
+            displayInput.value = studentName;
+            displayInput.classList.remove('text-gray-500');
+            displayInput.classList.add('text-gray-900', 'font-medium');
+        } else {
+            displayInput.value = "";
+            displayInput.classList.add('text-gray-500');
+            displayInput.classList.remove('text-gray-900', 'font-medium');
+        }
+    }
+
+    // Tab Switching Logic (Unchanged)
+    function switchTab(tabName) {
+        const issueForm = document.getElementById("issue-form");
+        const returnForm = document.getElementById("return-form");
+        const issueTab = document.getElementById("issue-tab");
+        const returnTab = document.getElementById("return-tab");
+
+        if (tabName === "issue") {
+            issueForm.classList.remove("hidden");
+            returnForm.classList.add("hidden");
+            issueTab.className = "flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700";
+            returnTab.className = "flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 text-gray-600 hover:bg-gray-100";
+        } else {
+            issueForm.classList.add("hidden");
+            returnForm.classList.remove("hidden");
+            returnTab.className = "flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700";
+            issueTab.className = "flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 text-gray-600 hover:bg-gray-100";
+        }
+    }
+
+    window.onload = function () {
+        // Check URL params or local storage if you want to remember tabs, otherwise default to issue
+        switchTab("issue");
+    };
+</script>
+
+{% endblock %}

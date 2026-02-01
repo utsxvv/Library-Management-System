@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+    <main class="p-4 md:p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-1">Transaction History</h1>
+        <p class="text-gray-500 mb-8">View all issued and returned books.</p>
+
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+            <form method="GET" class="flex flex-col md:flex-row gap-4 text-black">
+                <div class="flex-grow">
+                    <input type="text" name="search" value="{{ search_query }}" 
+                           placeholder="Search by Student or Book Title..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                
+                <div class="w-full md:w-48">
+                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option value="issued" {% if status_filter == 'issued' %}selected{% endif %}>Issued</option>
+                        <option value="returned" {% if status_filter == 'returned' %}selected{% endif %}>Returned</option>
+                        <option value="overdue" {% if status_filter == 'overdue' %}selected{% endif %}>Overdue</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Filter
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white border-b border-gray-200">
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">STUDENT</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">BOOK</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">ISSUED ON</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">DUE DATE</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">RETURNED ON</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for record in records %}
+                        
+                        {% cycle 'bg-blue-100 text-blue-600' 'bg-green-100 text-green-600' 'bg-purple-100 text-purple-600' 'bg-yellow-100 text-yellow-600' as circle_class silent %}
+                        
+                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="p-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg {{ circle_class }} font-bold text-sm">
+                                        {% if record.user.first_name %}
+                                            {{ record.user.first_name|first|upper }}{{ record.user.last_name|first|upper }}
+                                        {% else %}
+                                            {{ record.user.username|slice:":2"|upper }}
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">
+                                            {{ record.user.get_full_name|default:record.user.username }}
+                                        </p>
+                                        <p class="text-xs text-gray-400 font-normal">
+                                            {{ record.user.email }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="p-5">
+                                <p class="text-sm font-medium text-gray-800">{{ record.book.title }}</p>
+                                <p class="text-xs text-gray-400 mt-0.5">ISBN: {{ record.book.isbn }}</p>
+                            </td>
+
+                            <td class="p-5 text-sm text-gray-600 whitespace-nowrap">
+                                {{ record.issue_date|date:"M d, Y" }}
+                            </td>
+                            <td class="p-5 text-sm text-gray-600 whitespace-nowrap">
+                                {{ record.due_date|date:"M d, Y" }}
+                            </td>
+                            <td class="p-5 text-sm text-gray-600 whitespace-nowrap">
+                                {% if record.return_date %}
+                                    {{ record.return_date|date:"M d, Y" }}
+                                {% else %}
+                                    <span class="text-gray-300">-</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="p-5 text-center">
+                                {% if record.status == 'issued' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                                        Issued
+                                    </span>
+                                {% elif record.status == 'returned' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                                        Returned
+                                    </span>
+                                {% elif record.status == 'overdue' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                                        Overdue
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800">
+                                        {{ record.status|title }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="p-10 text-center text-gray-500">
+                                No records found matching your filters.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if records.has_other_pages %}
+            <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex items-center justify-between sm:px-6">
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing page <span class="font-bold">{{ records.number }}</span> of <span class="font-bold">{{ records.paginator.num_pages }}</span>
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {% if records.has_previous %}
+                                <a href="?page={{ records.previous_page_number }}&search={{ search_query }}&status={{ status_filter }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Previous
+                                </a>
+                            {% endif %}
+                            
+                            {% if records.has_next %}
+                                <a href="?page={{ records.next_page_number }}&search={{ search_query }}&status={{ status_filter }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Next
+                                </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}

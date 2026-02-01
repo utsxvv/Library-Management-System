@@ -1,0 +1,368 @@
+{% include "index.html" %}
+
+{% block content %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col md:flex-row gap-4 mb-10">
+        <div class="relative flex-1">
+            <form id="filter-form" class="flex flex-col md:flex-row gap-4 mb-10 items-center text-black">
+                <div class="relative flex-grow w-full md:w-auto">
+                    <input type="text" id="search-input" name="search" placeholder="Search books by keyword..."
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+
+                <div class="relative w-full md:w-48">
+                    <button type="button" id="genre-dropdown-btn"
+                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm focus:ring-2 focus:ring-blue-500">
+                        <span id="genre-label">All Genres</span>
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="genre-dropdown-menu"
+                        class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
+                        {% for genre in all_genres %}
+                        <div class="filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                            data-id="{{ genre.pk }}" data-type="genre" data-state="neutral">
+                            <span class="text-sm text-gray-700 font-medium">{{ genre.genre_name }}</span>
+                            <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="relative w-full md:w-48">
+                    <button type="button" id="lang-dropdown-btn"
+                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm focus:ring-2 focus:ring-blue-500">
+                        <span id="lang-label">All Languages</span>
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <div id="lang-dropdown-menu"
+                        class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
+                        {% for lang in all_languages %}
+                        <div class="filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                            data-id="{{ lang.pk }}" data-type="language" data-state="neutral">
+                            <span class="text-sm text-gray-700 font-medium">{{ lang.language_name }}</span>
+                            <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="flex justify-center items-center mt-10 space-x-2">
+        <div id="book-grid-container">
+            {% include "partials/book_grid_content.html" %}
+        </div>
+    </div>
+    </div>
+</main>
+
+<div id="requestModal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    style="display: none;">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Confirm Your Request</h2>
+        <p class="text-gray-700 mb-2">Are you sure you want to request the following book?</p>
+
+        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+            <h3 id="modalBookTitle" class="text-lg font-semibold text-gray-900"></h3>
+            <p id="modalBookAuthor" class="text-sm text-gray-600"></p>
+        </div>
+
+        <div id="modalMessage" class="hidden text-sm font-medium mb-4"></div>
+
+        <div class="flex justify-end space-x-3">
+            <button id="modalCancelBtn"
+                class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <button id="modalConfirmBtn" data-book-id=""
+                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                Confirm Request
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const genreFilter = document.getElementById('genre-filter');
+        const languageFilter = document.getElementById('language-filter');
+        const bookGridContainer = document.getElementById('book-grid-container');
+
+        const modal = document.getElementById('requestModal');
+        const modalTitle = document.getElementById('modalBookTitle');
+        const modalAuthor = document.getElementById('modalBookAuthor');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const modalMessage = document.getElementById('modalMessage');
+        const csrfToken = '{{ csrf_token }}'; // Get the CSRF token
+
+
+        // Dropdown Buttons and Menus
+        const genreBtn = document.getElementById('genre-dropdown-btn');
+        const genreMenu = document.getElementById('genre-dropdown-menu');
+        const langBtn = document.getElementById('lang-dropdown-btn');
+        const langMenu = document.getElementById('lang-dropdown-menu');
+
+        // Filter Items
+        const filterItems = document.querySelectorAll('.filter-item');
+
+        if (bookGridContainer) {
+            console.log("yes");
+            bookGridContainer.addEventListener('click', function (event) {
+
+                // --- A. Pagination Logic ---
+                const paginationLink = event.target.closest('.pagination-link');
+                if (paginationLink) {
+                    event.preventDefault();
+                    const url = new URL(paginationLink.href);
+                    const page = url.searchParams.get('page');
+                    if (page) {
+                        fetchBooks(page);
+                        // Optional: Update browser URL
+                        const currentUrl = new URL(window.location);
+                        currentUrl.searchParams.set('page', page);
+                        window.history.pushState({}, '', currentUrl);
+                    }
+                    return; // Stop here so we don't trigger other logic
+                }
+
+                // --- B. Request Button Logic ---
+                const requestBtn = event.target.closest('.request-book-btn');
+                if (requestBtn) {
+                    event.preventDefault();
+
+                    // Get Data
+                    const bookId = requestBtn.dataset.bookId;
+                    const bookTitle = requestBtn.dataset.bookTitle;
+                    const bookAuthor = requestBtn.dataset.bookAuthor;
+
+                    // Show Modal
+                    modalTitle.textContent = bookTitle;
+                    modalAuthor.textContent = `by ${bookAuthor}`;
+                    modalConfirmBtn.dataset.bookId = bookId;
+
+                    modalMessage.textContent = '';
+                    modalMessage.className = 'hidden text-sm font-medium mb-4';
+                    modalConfirmBtn.disabled = false;
+                    modalConfirmBtn.textContent = 'Confirm Request';
+
+                    modal.style.display = 'flex';
+                }
+            });
+        }
+
+        // Hide modal on cancel
+        modalCancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Handle the "Confirm" click
+        modalConfirmBtn.addEventListener('click', async function () {
+            const bookId = this.dataset.bookId;
+            const originalText = this.textContent; // Save original text
+            
+            this.disabled = true;
+            this.textContent = 'Processing...';
+
+            try {
+                const response = await fetch(`/api/request-book/${bookId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. Show Success Message
+                    modalMessage.textContent = data.message;
+                    
+                    // Set color based on status
+                    if (data.status === 'waiting') {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-yellow-700';
+                    } else if (data.status === 'pending') {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-blue-700';
+                    } else {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-green-700';
+                    }
+
+                    // 2. WAIT 1.5 Seconds, THEN CLOSE & REFRESH
+                    setTimeout(() => {
+                        modal.style.display = 'none'; // Close the modal
+                        fetchBooks(1); // Refresh the grid to show updated status
+                        
+                        // Reset Modal State for next use
+                        modalConfirmBtn.disabled = false;
+                        modalConfirmBtn.textContent = 'Confirm Request';
+                        modalMessage.className = 'hidden text-sm font-medium mb-4';
+                    }, 1500);
+
+                } else {
+                    // Handle logical errors (like "Already requested")
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                // Show error message but keep modal open so user can read it
+                modalMessage.textContent = error.message || 'An unknown error occurred.';
+                modalMessage.className = 'block text-sm font-medium mb-4 text-red-700';
+                
+                // Re-enable button so they can try again or Cancel
+                this.disabled = false;
+                this.textContent = 'Confirm Request';
+            }
+        });
+
+        // State Storage: { genre: {id: 'included'/'excluded'}, language: {...} }
+        let activeFilters = { genre: {}, language: {} };
+        let debounceTimeout;
+
+        // --- 1. Dropdown Toggle Logic ---
+        function toggleMenu(menu) {
+            const isHidden = menu.classList.contains('hidden');
+            // Close all first
+            genreMenu.classList.add('hidden');
+            langMenu.classList.add('hidden');
+            if (isHidden) menu.classList.remove('hidden');
+        }
+
+        genreBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(genreMenu); });
+        langBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(langMenu); });
+
+        // Close dropdowns if clicking outside
+        document.addEventListener('click', () => {
+            genreMenu.classList.add('hidden');
+            langMenu.classList.add('hidden');
+        });
+
+        // Stop closing when clicking inside the menu
+        genreMenu.addEventListener('click', (e) => e.stopPropagation());
+        langMenu.addEventListener('click', (e) => e.stopPropagation());
+
+
+        // --- 2. Tri-State Logic (Neutral -> Include -> Exclude -> Neutral) ---
+        filterItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const type = this.dataset.type; // 'genre' or 'language'
+                const id = this.dataset.id;
+                let state = this.dataset.state;
+
+                // Cycle State
+                if (state === 'neutral') state = 'included';
+                else if (state === 'included') state = 'excluded';
+                else state = 'neutral';
+
+                // Update Visuals
+                updateItemVisuals(this, state);
+
+                // Update Logic State
+                if (state === 'neutral') {
+                    delete activeFilters[type][id];
+                } else {
+                    activeFilters[type][id] = state;
+                }
+
+                // Trigger Search
+                fetchBooks(1);
+            });
+        });
+
+
+        function updateItemVisuals(element, state) {
+            element.dataset.state = state;
+            const iconSpan = element.querySelector('.status-icon');
+
+            // Reset classes
+            element.className = "filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between transition-colors select-none border border-transparent";
+            iconSpan.innerHTML = "";
+
+            if (state === 'included') {
+                element.classList.add('bg-green-50', 'border-green-200');
+                // Green Checkmark SVG
+                iconSpan.innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+            } else if (state === 'excluded') {
+                element.classList.add('bg-red-50', 'border-red-200');
+                // Red X SVG
+                iconSpan.innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            } else {
+                element.classList.add('hover:bg-gray-50');
+            }
+        }
+
+        async function fetchBooks(page = 1) {
+            const searchQuery = searchInput.value;
+
+            // Helper to separate included/excluded IDs
+            const getIdsByState = (type, state) => {
+                return Object.keys(activeFilters[type])
+                    .filter(id => activeFilters[type][id] === state)
+                    .join(',');
+            };
+
+            const params = new URLSearchParams({
+                search: searchQuery,
+                page: page,
+                genre_in: getIdsByState('genre', 'included'),
+                genre_ex: getIdsByState('genre', 'excluded'),
+                lang_in: getIdsByState('language', 'included'),
+                lang_ex: getIdsByState('language', 'excluded'),
+            });
+
+            const url = `{% url 'filter_books' %}?${params.toString()}`;
+
+            try {
+                // Update labels to show count (Optional UI polish)
+                updateLabels();
+
+                const response = await fetch(`{% url 'filter_books' %}?${params.toString()}`);
+                const data = await response.json();
+                bookGridContainer.innerHTML = data.books_html;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateLabels() {
+            const gCount = Object.keys(activeFilters.genre).length;
+            const lCount = Object.keys(activeFilters.language).length;
+
+            document.getElementById('genre-label').textContent = gCount > 0 ? `Genres (${gCount})` : 'All Genres';
+            document.getElementById('lang-label').textContent = lCount > 0 ? `Languages (${lCount})` : 'All Languages';
+        }
+
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                fetchBooks(1);
+            }, 300);
+        });
+
+        genreFilter.addEventListener('change', () => fetchBooks(1));
+        languageFilter.addEventListener('change', () => fetchBooks(1));
+
+
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+BookID,isbn,Title,Author,Description,Genres,Language,Total Copies,available_copies
+101,978-1958682846,The Algorithms Design Manual,Steven Skiena,Practical guide to algorithm design and analysis,"Computer Science,Algorithms,Programming",English,5,1
+102,978-1939042955,Python Crash Course,Eric Matthes,Hands-on Python programming guide for beginners,"Programming,Python,Beginner",English,3,0
+103,978-4733616459,The Lord of the Rings,J.R.R. Tolkien,Epic fantasy adventure in Middle-earth,"Fantasy,Adventure,Fiction",English,4,5
+104,978-5693307665,To Kill a Mockingbird,Harper Lee,Story of racial inequality and moral growth,"Fiction,Classic,Drama",English,6,6
+105,978-3303082117,The Hunger Games,Suzanne Collins,Dystopian thriller with survival games,"Young Adult,Dystopian,Adventure",English,3,2
+106,978-9786748825,Pride and Prejudice,Jane Austen,Classic romance and social commentary,"Romance,Classic,Fiction",English,5,0
+107,978-2566942273,The Da Vinci Code,Dan Brown,Mystery thriller involving art and secrets,"Mystery,Thriller,Fiction",English,4,1
+108,978-4131575764,Harry Potter and the Philosopher's Stone,J.K. Rowling,Young wizard's first year at Hogwarts,"Fantasy,Young Adult,Adventure",English,7,6
+109,978-6649827836,The Shining,Stephen King,Psychological horror in an isolated hotel,"Horror,Thriller,Fiction",English,3,0
+110,978-8055995058,A Brief History of Time,Stephen Hawking,Explains complex cosmology concepts,"Science,Physics,Non-Fiction",English,4,1
+111,978-7801222128,The Art of War,Sun Tzu,Ancient Chinese military strategy,"Philosophy,History,Non-Fiction",English,2,1
+112,978-8217611860,The Great Gatsby,F. Scott Fitzgerald,American dream and jazz age tragedy,"Classic,Fiction,Drama",English,5,1
+113,978-9639245200,1984,George Orwell,Dystopian novel about totalitarianism,"Dystopian,Classic,Fiction",English,4,4
+114,978-5974249674,The Hobbit,J.R.R. Tolkien,Fantasy adventure of Bilbo Baggins,"Fantasy,Adventure,Fiction",English,6,4
+115,978-1854316681,The Catcher in the Rye,J.D. Salinger,Teenage rebellion and alienation,"Classic,Fiction,Young Adult",English,3,0
+116,978-9285415473,"Thinking, Fast and Slow",Daniel Kahneman,Psychology of decision making,"Psychology,Science,Non-Fiction",English,3,0
+117,978-4504793184,The Martian,Andy Weir,Astronaut stranded on Mars survival story,"Science Fiction,Adventure,Thriller",English,4,1
+118,978-6633778586,The Girl with the Dragon Tattoo,Stieg Larsson,Crime thriller with hacker protagonist,"Mystery,Thriller,Crime",English,3,8
+119,978-2452066459,Sapiens: A Brief History of Humankind,Yuval Noah Harari,History of human species evolution,"History,Science,Anthropology",English,5,3
+120,978-1252860896,The Silent Patient,Alex Michaelides,Psychological thriller with shocking twist,"Mystery,Thriller,Psychological",English,3,1
+121,978-3030106617,Atomic Habits,James Clear,Guide to building good habits and breaking bad ones,"Self-Help,Psychology,Non-Fiction",English,6,3
+122,978-7114223633,Dune,Frank Herbert,Epic science fiction on desert planet,"Science Fiction,Adventure,Classic",English,4,0
+123,978-2067970820,The Seven Husbands of Evelyn Hugo,Taylor Jenkins Reid,Aging movie star reveals life secrets,"Fiction,Romance,Drama",English,3,7
+124,978-4965395580,Educated,Tara Westover,Memoir of survival and self-invention,"Memoir,Biography,Non-Fiction",English,4,1
+125,978-6009268066,The Night Circus,Erin Morgenstern,Magical competition in mysterious circus,"Fantasy,Romance,Magical Realism",English,3,3
+126,978-9526836552,Gone Girl,Gillian Flynn,Psychological thriller about a missing wife,"Mystery,Thriller,Fiction",English,4,4
+127,978-6110572428,The Book Thief,Markus Zusak,Story of a girl in Nazi Germany,"Historical Fiction,Young Adult",English,5,0
+128,978-3281169403,The Kite Runner,Khaled Hosseini,Story of friendship and redemption in Afghanistan,"Fiction,Drama,Historical",English,4,1
+129,978-2734202799,The Alchemist,Paulo Coelho,Philosophical novel about personal legend,"Fiction,Philosophy,Adventure",English,6,4
+130,978-2119980130,Brave New World,Aldous Huxley,Dystopian novel about technological society,"Dystopian,Science Fiction,Classic",English,3,2
+131,978-1311570307,The Handmaid's Tale,Margaret Atwood,Dystopian feminist novel,"Dystopian,Fiction,Speculative Fiction",English,4,9
+132,978-2139027119,The Road,Cormac McCarthy,Post-apocalyptic father-son journey,"Fiction,Post-Apocalyptic,Drama",English,3,0
+133,978-8316648259,Life of Pi,Yann Martel,Survival story with a tiger on a lifeboat,"Adventure,Fiction,Magical Realism",English,4,0
+134,978-2135872495,The Name of the Wind,Patrick Rothfuss,Fantasy about a legendary magician,"Fantasy,Adventure,Fiction",English,3,2
+135,978-7393195616,The Goldfinch,Donna Tartt,Pulitzer-winning novel about art and loss,"Fiction,Literary,Drama",English,3,2
+136,978-4311931853,Where the Crawdads Sing,Delia Owens,Mystery and coming-of-age in marshes,"Mystery,Fiction,Romance",English,5,3
+137,978-4882343658,The Subtle Art of Not Giving a F*ck,Mark Manson,Self-help with counterintuitive approach,"Self-Help,Psychology,Non-Fiction",English,6,1
+138,978-5474620894,Becoming,Michelle Obama,Memoir by former First Lady,"Memoir,Biography,Autobiography",English,5,1
+139,978-4993808565,The Power of Now,Eckhart Tolle,Spiritual guide to present moment awareness,"Spirituality,Self-Help,Philosophy",English,4,3
+140,978-4482141802,The Four Agreements,Don Miguel Ruiz,Practical guide to personal freedom,"Spirituality,Self-Help,Philosophy",English,3,0
+141,978-7271954644,The 7 Habits of Highly Effective People,Stephen Covey,Leadership and personal development,"Business,Self-Help,Psychology",English,5,1
+142,978-4712367625,Rich Dad Poor Dad,Robert Kiyosaki,Financial education and mindset,"Business,Finance,Self-Help",English,4,5
+143,978-9462806178,The Intelligent Investor,Benjamin Graham,Classic text on value investing,"Business,Finance,Investing",English,2,4
+144,978-6642201119,Thinking in Systems,Donella Meadows,Introduction to systems thinking,"Science,Business,Systems Theory",English,3,1
+145,978-8339176912,The Lean Startup,Eric Ries,Methodology for developing businesses,"Business,Entrepreneurship,Technology",English,4,8
+146,978-7971399399,Good to Great,Jim Collins,Why some companies make the leap,"Business,Management,Leadership",English,3,4
+147,978-3381183483,The Innovator's Dilemma,Clayton Christensen,Disruptive innovation theory,"Business,Technology,Innovation",English,3,6
+148,978-5296710795,The Fifth Discipline,Peter Senge,Learning organizations and systems thinking,"Business,Management,Systems Thinking",English,2,3
+149,978-7192423780,The Phoenix Project,Gene Kim,IT management novel about DevOps,"Technology,Business,Fiction",English,3,7
+150,978-4226113732,Clean Code,Robert Martin,Software craftsmanship and best practices,"Programming,Computer Science,Technology",English,4,1
+151,978-4300636585,Design Patterns,Erich Gamma,Classic software design patterns,"Computer Science,Programming,Technology",English,3,3
+152,978-2825989011,The Mythical Man-Month,Fred Brooks,Software engineering management essays,"Computer Science,Technology,Business",English,2,7
+153,978-8995059760,Introduction to Machine Learning,Ethem Alpaydin,Comprehensive ML textbook,"Computer Science,Machine Learning,AI",English,3,1
+154,978-6322520473,Deep Learning,Ian Goodfellow,Foundational deep learning textbook,"AI,Machine Learning,Computer Science",English,2,2
+155,978-1346078411,Pattern Recognition,Sergios Theodoridis,Machine learning and pattern recognition,"Computer Science,AI,Mathematics",English,3,3
+156,978-7296096954,The C Programming Language,Brian Kernighan,Classic C programming reference,"Programming,Computer Science,Technology",English,4,3
+157,978-6928691380,Structure and Interpretation,Gerald Sussman,Classic computer science textbook,"Computer Science,Programming",English,3,2
+158,978-6237376063,Artificial Intelligence: Modern Approach,Stuart Russell,Comprehensive AI textbook,"AI,Computer Science,Technology",English,3,0
+159,978-8904911624,Database System Concepts,Abraham Silberschatz,Fundamental database concepts,"Computer Science,Database,Technology",English,4,8
+160,978-8055556030,Computer Networks,Andrew Tanenbaum,Networking principles and protocols,"Computer Science,Networking,Technology",English,3,2

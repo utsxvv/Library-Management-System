@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Admin Books{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+
+    <header class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10">
+        <button class="text-gray-600 hover:text-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" x2="21" y1="12" y2="12" />
+                <line x1="3" x2="21" y1="6" y2="6" />
+                <line x1="3" x2="21" y1="18" y2="18" />
+            </svg>
+        </button>
+        <span class="text-lg font-semibold text-gray-900">Library Admin</span>
+        <button class="text-gray-600 hover:text-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+        </button>
+    </header>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row gap-4 mb-5 mt-10">
+            <div class="relative flex-1">
+                <form id="filter-form" class="flex flex-col md:flex-row gap-4 mb-10 items-center text-black">
+                    <div class="relative flex-grow w-full md:w-auto">
+                        <input type="text" id="search-input" name="search" placeholder="Search books by keyword..."
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+
+                    <!-- GENRE DROPDOWN -->
+                    <div class="relative w-full md:w-48">
+                        <button type="button" id="admin-genre-btn"
+                            class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm">
+                            <span id="admin-genre-label">All Genres</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div id="admin-genre-menu"
+                            class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
+                            {% for genre in all_genres %}
+                            <div class="admin-filter-item filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                                data-id="{{ genre.pk }}" data-type="genre" data-state="neutral">
+                                <span class="text-sm text-gray-700 font-medium">{{ genre.genre_name }}</span>
+                                <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- LANGUAGE DROPDOWN -->
+                    <div class="relative w-full md:w-48">
+                        <button type="button" id="admin-lang-btn"
+                            class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm">
+                            <span id="admin-lang-label">All Languages</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div id="admin-lang-menu"
+                            class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
+                            {% for lang in all_languages %}
+                            <div class="admin-filter-item filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                                data-id="{{ lang.pk }}" data-type="language" data-state="neutral">
+                                <span class="text-sm text-gray-700 font-medium">{{ lang.language_name }}</span>
+                                <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">View Books</h2>
+        <div class="flex justify-center items-center mt-10 space-x-2">
+            <div id="book-grid-container">
+                {% include "partials/book_grid_content.html" %}
+            </div>
+        </div>
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const bookGridContainer = document.getElementById('book-grid-container');
+
+        // Dropdowns
+        const genreBtn = document.getElementById('admin-genre-btn');
+        const genreMenu = document.getElementById('admin-genre-menu');
+        const langBtn = document.getElementById('admin-lang-btn');
+        const langMenu = document.getElementById('admin-lang-menu');
+
+        // Label updates
+        const genreLabel = document.getElementById('admin-genre-label');
+        const langLabel = document.getElementById('admin-lang-label');
+
+        // Tri-state filter items
+        const filterItems = document.querySelectorAll('.admin-filter-item');
+
+        let activeFilters = { genre: {}, language: {} };
+        let debounceTimeout;
+
+        // Dropdown toggle
+        function toggleMenu(menu) {
+            const isHidden = menu.classList.contains('hidden');
+            genreMenu.classList.add('hidden');
+            langMenu.classList.add('hidden');
+            if (isHidden) menu.classList.remove('hidden');
+        }
+
+        genreBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(genreMenu); });
+        langBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(langMenu); });
+
+        document.addEventListener('click', () => {
+            genreMenu.classList.add('hidden');
+            langMenu.classList.add('hidden');
+        });
+
+        genreMenu.addEventListener('click', e => e.stopPropagation());
+        langMenu.addEventListener('click', e => e.stopPropagation());
+
+        // Tri-state click logic
+        filterItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const type = this.dataset.type;
+                const id = this.dataset.id;
+                let state = this.dataset.state;
+
+                if (state === 'neutral') state = 'included';
+                else if (state === 'included') state = 'excluded';
+                else state = 'neutral';
+
+                updateItemVisuals(this, state);
+
+                if (state === 'neutral') delete activeFilters[type][id];
+                else activeFilters[type][id] = state;
+
+                fetchBooks(1);
+            });
+        });
+
+        function updateItemVisuals(element, state) {
+            element.dataset.state = state;
+            const icon = element.querySelector('.status-icon');
+            element.className = "admin-filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between transition-colors";
+
+            icon.innerHTML = "";
+
+            if (state === 'included') {
+                element.classList.add('bg-green-50', 'border', 'border-green-200');
+                icon.innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            }
+            else if (state === 'excluded') {
+                element.classList.add('bg-red-50', 'border', 'border-red-200');
+                icon.innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            }
+            else {
+                element.classList.add('hover:bg-gray-50');
+            }
+        }
+
+        // Fetch books
+        async function fetchBooks(page = 1) {
+            const searchQuery = searchInput.value;
+
+            const getIds = (type, state) =>
+                Object.keys(activeFilters[type]).filter(id => activeFilters[type][id] === state).join(',');
+
+            const params = new URLSearchParams({
+                search: searchQuery,
+                page,
+                genre_in: getIds('genre', 'included'),
+                genre_ex: getIds('genre', 'excluded'),
+                lang_in: getIds('language', 'included'),
+                lang_ex: getIds('language', 'excluded'),
+            });
+
+            updateLabels();
+
+            const response = await fetch(`{% url 'filter_books' %}?${params.toString()}`);
+            const data = await response.json();
+            bookGridContainer.innerHTML = data.books_html;
+        }
+
+        function updateLabels() {
+            const g = Object.keys(activeFilters.genre).length;
+            const l = Object.keys(activeFilters.language).length;
+
+            genreLabel.textContent = g > 0 ? `Genres (${g})` : 'All Genres';
+            langLabel.textContent = l > 0 ? `Languages (${l})` : 'All Languages';
+        }
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => fetchBooks(1), 300);
+        });
+    });
+</script>
+
+{% endblock %}
